@@ -1,0 +1,71 @@
+body {
+    background: #000;
+    color: #fff;
+}
+
+.main {
+    background-color: #121212;
+}
+
+a {
+    transition: color 0.2s ease;
+}
+
+.loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 2px;
+    background-color: #000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+}
+
+#youtube-player {
+    width: 100%;
+    height: 100%;
+
+    iframe {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+input[type='color'] {
+    -webkit-appearance: none;
+}
+
+.active,
+.router-link-active {
+    color: #888;
+}
+
+button {
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+[x-cloak=''] {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+input {
+    color: #000;
+}
+
+@media screen and (max-width: theme('screens.lg')) {
+    [x-cloak='lg'] {
+        display: none;
+    }
+}

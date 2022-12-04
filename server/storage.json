@@ -1,0 +1,28 @@
+{
+    "settings": {
+        "parent_hostname": "raspberrypi.local",
+        "poster_display_speed": 15000,
+        "transition_type": "fade",
+        "random_order": false,
+        "wifi_country_code": "",
+        "wifi_sid": "",
+        "wifi_password": "",
+        "coming_soon_text": "Coming Soon",
+        "now_playing_text": "Now Playing",
+        "speaker_config": "",
+        "speaker_config_location": "top-right",
+        "show_speaker_config": true,
+        "override_parent_sequence": false,
+        "override_parent_transitons": false,
+        "override_parent_colors": false,
+        "poster_bg_color": "#000000",
+        "header_bg_color": "#000000",
+        "header_text_color": "#FFFFFF",
+        "show_header_border": true,
+        "header_border_color": "#FFFFFF",
+        "header_font": "default",
+        "header_font_size": "normal",
+        "footer_bg_color": "#000000",
+        "footer_text_color": "#FFFFFF"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "dmp-addon-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "mdns": "^2.7.2",
+        "simple-json-db": "^2.0.0"
+    }
+}
