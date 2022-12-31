@@ -9,6 +9,11 @@ export const usePostersStore = defineStore('posters', {
         socket: null,
         posters: [],
         poster: {},
+        overlays: [],
+        activeOverlay: {
+            file_name: null,
+        },
+        overlayTime: false,
         localSettings: {
             parent_hostname: '',
             poster_display_speed: 15000,
@@ -442,6 +447,20 @@ export const usePostersStore = defineStore('posters', {
 
             return poster;
         },
+        showOverlay(overlay) {
+            this.activeOverlay = overlay;
+            this.activeOverlay.show = true;
+            this.overlayTime = true;
+            this.stopMusic();
+            this.stopVideo();
+            this.stopTransitionImages();
+            this.canRefreshTransitionTime = false;
+        },
+        hideOverlay() {
+            console.log('OVERLAY DONE!!!');
+            this.activeOverlay.show = false;
+            this.startTransitionImages();
+        },
         setSocket() {
             console.log(' --- STARTING WEBSOCKET CONNECTION ---');
             this.socket = io('http://' + this.localSettings.parent_hostname + ':3000');
@@ -464,6 +483,16 @@ export const usePostersStore = defineStore('posters', {
                 this.poster = data.poster;
                 this.parentSettings = data.settings;
                 this.setSyncPoster();
+            });
+
+            this.socket.on('overlay:show', (data) => {
+                console.log('overlay:show', data);
+                this.showOverlay(data.overlay);
+            });
+
+            this.socket.on('overlay:hide', (data) => {
+                console.log('overlay:hide', data);
+                this.hideOverlay();
             });
 
             this.socket.on('poster:controlTv', (data) => {

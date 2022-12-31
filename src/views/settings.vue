@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="text-2xl font-bold mb-5">Settings</div>
+        <div class="text-2xl font-bold mb-8">Settings</div>
 
         <div class="mb-5">
             <label for="random" class="text-gray-300 block mb-2 font-bold flex items-center">
@@ -30,7 +30,7 @@
             <div id="randomHelp" class="text-gray-400 text-sm"></div>
         </div>
 
-        <div class="mb-5">
+        <div class="mb-8">
             <label for="random" class="text-gray-300 block mb-2 font-bold flex items-center">
                 <input
                     type="checkbox"

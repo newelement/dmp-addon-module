@@ -1,75 +1,119 @@
 <template>
-    <div class="movie-posters">
-        <div class="loading-overlay" v-if="loading">
-            <a href="/settings" class="p-6" v-html="loadingMessage"></a>
-        </div>
-        <transition name="fade">
-            <a
-                id="recent-added-container"
-                class="poster-container"
-                href="/settings"
-                v-if="!isPlaying"
-            >
-                <TopHeader />
-                <div class="recent-poster-container">
-                    <div class="trailer-container has-trailer">
+    <div>
+        <div class="movie-posters">
+            <div class="loading-overlay" v-if="loading">
+                <a href="/settings" class="p-6" v-html="loadingMessage"></a>
+            </div>
+            <transition name="fade">
+                <a
+                    id="recent-added-container"
+                    class="poster-container"
+                    href="/settings"
+                    v-if="!isPlaying"
+                >
+                    <TopHeader />
+                    <div class="recent-poster-container">
+                        <div class="trailer-container has-trailer">
+                            <div
+                                class="poster-items"
+                                :style="'background-color: ' + parentSettings.poster_bg_color"
+                            >
+                                <div
+                                    v-for="(poster, index) in filteredPosters"
+                                    v-bind:key="`key-${index}`"
+                                    class="poster"
+                                    :class="{
+                                        'has-trailer': poster.show_trailer && poster.trailer_path,
+                                    }"
+                                    :style="blackBars(poster)"
+                                >
+                                    <transition :name="transitionName">
+                                        <div
+                                            v-if="poster.show"
+                                            :style="
+                                                'background-image: url(http://192.168.86.58/storage/posters/' +
+                                                poster.file_name +
+                                                ')'
+                                            "
+                                        ></div>
+                                    </transition>
+                                </div>
+                            </div>
+
+                            <div id="trailer">
+                                <div ref="videoPlayer" id="youtube-player"></div>
+                            </div>
+                            <div id="music"></div>
+                        </div>
+                    </div>
+                    <BottomFooter />
+                </a>
+            </transition>
+            <transition name="fade">
+                <a
+                    id="now-playing-container"
+                    class="poster-container"
+                    v-if="isPlaying"
+                    href="/posters"
+                >
+                    <TopHeader />
+                    <div class="now-playing-wrap">
                         <div
-                            class="poster-items"
+                            class="now-playing-container"
                             :style="'background-color: ' + parentSettings.poster_bg_color"
                         >
                             <div
-                                v-for="(poster, index) in filteredPosters"
-                                v-bind:key="`key-${index}`"
-                                class="poster"
-                                :class="{
-                                    'has-trailer': poster.show_trailer && poster.trailer_path,
-                                }"
-                                :style="blackBars(poster)"
-                            >
-                                <transition :name="transitionName">
-                                    <div
-                                        v-if="poster.show"
-                                        :style="
-                                            'background-image: url(http://192.168.86.58/storage/posters/' +
-                                            poster.file_name +
-                                            ')'
-                                        "
-                                    ></div>
-                                </transition>
-                            </div>
+                                class="now-playing-poster"
+                                :style="
+                                    'background-image: url(' +
+                                    nowPlayingPoster +
+                                    ');' +
+                                    blackBars(false)
+                                "
+                            ></div>
                         </div>
-
-                        <div id="trailer">
-                            <div ref="videoPlayer" id="youtube-player"></div>
-                        </div>
-                        <div id="music"></div>
                     </div>
-                </div>
-                <BottomFooter />
-            </a>
-        </transition>
-        <transition name="fade">
-            <a id="now-playing-container" class="poster-container" v-if="isPlaying" href="/posters">
-                <TopHeader />
-                <div class="now-playing-wrap">
-                    <div
-                        class="now-playing-container"
-                        :style="'background-color: ' + parentSettings.poster_bg_color"
-                    >
+                    <BottomFooter />
+                </a>
+            </transition>
+        </div>
+        <div class="overlays" v-if="settings.show_overlays">
+            <div v-for="(overlay, oIndex) in overlays" :key="'overlay-' + oIndex">
+                <transition name="fade">
+                    <div v-show="overlay.show">
                         <div
-                            class="now-playing-poster"
+                            v-if="overlay.type === 'image'"
+                            class="
+                                fixed
+                                z-100
+                                inset-0
+                                w-full
+                                h-full
+                                bg-no-repeat bg-center bg-black
+                            "
+                            :class="settings.overlay_background_size"
                             :style="
-                                'background-image: url(' +
-                                nowPlayingPoster +
-                                ');' +
-                                blackBars(false)
+                                'background-image: url(/storage/overlays/' + overlay.file_name + ')'
                             "
                         ></div>
+                        <div
+                            v-show="overlay.type === 'video'"
+                            class="fixed z-40 inset-0 w-full h-full bg-black"
+                        ></div>
                     </div>
-                </div>
-                <BottomFooter />
-            </a>
-        </transition>
+                </transition>
+            </div>
+            <video
+                id="overlayVideo"
+                v-if="overlayTime && activeOverlay.file_name && activeOverlay.type === 'video'"
+                ref="overlayVideo"
+                class="fixed z-50 inset-0 w-full h-full"
+                :src="'/storage/overlays/' + activeOverlay.file_name"
+                autoplay
+                muted
+                loop
+            ></video>
+        </div>
     </div>
 </template>
 <script>
@@ -122,6 +166,8 @@ export default {
             'theme_music',
             'withinMpaaLimit',
             'withinTvLimit',
+            'overlayTime',
+            'activeOverlay',
         ]),
         filteredPosters() {
             return this.posters.filter((poster) => {
